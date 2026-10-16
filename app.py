@@ -15,9 +15,14 @@ hide_header_style = """
         display: none !important;
         visibility: hidden !important;
     }
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
-    .stDeployButton {display:none !important;}
+    #MainMenu {visibility: hidden !important; display: none !important;}
+    footer {visibility: hidden !important; display: none !important;}
+    .stDeployButton {display: none !important;}
+    
+    /* إخفاء الأيقونات العائمة وزر التاج وعلامة ستريمليت في أسفل الشاشة */
+    [data-testid="stToolbar"] {display: none !important; visibility: hidden !important;}
+    [data-testid="manage-app-button"] {display: none !important; visibility: hidden !important;}
+    .viewerBadge_container__1QSob {display: none !important;}
     
     [data-testid="collapsedControl"] {
         display: none !important;
@@ -491,7 +496,6 @@ document.addEventListener("DOMContentLoaded", function() {
     const timeWarningBox = document.getElementById("time_warning_container");
     const mainApp = document.getElementById("main_app_container");
 
-    // التحقق من أن الجهاز هو iPhone وأن المتصفح هو Safari الأصلي
     const userAgent = navigator.userAgent || navigator.vendor || window.opera;
     const isIPhone = /iphone|ipad|ipod/i.test(userAgent);
     const isSafari = isIPhone && /safari/i.test(userAgent) && !/crios|fxios|opios|mercury|instagram|fbav|gsa/i.test(userAgent);
@@ -715,7 +719,7 @@ function showMessage(text, color, bgColor) {
 
 function cleanDigits(inputStr) {
     if (!inputStr) return "";
-    let cleaned = inputStr.toString().replace(/[\\u200B-\\u200D\\uFEFF]/g, '').trim();
+    let cleaned = inputStr.toString().replace(/[\u200B-\u200D\uFEFF]/g, '').trim();
     let arabicNumbers = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
     let persianNumbers = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
     for (let i = 0; i < 10; i++) {
