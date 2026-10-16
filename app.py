@@ -9,6 +9,7 @@ import requests
 
 st.set_page_config(page_title="تسجيل الحضور الجامعي الذكي", page_icon="📍")
 
+# إخفاء عناصر الهيدر والقائمة الأساسية
 hide_header_style = """
     <style>
     [data-testid="stHeader"] {
@@ -18,11 +19,6 @@ hide_header_style = """
     #MainMenu {visibility: hidden !important; display: none !important;}
     footer {visibility: hidden !important; display: none !important;}
     .stDeployButton {display: none !important;}
-    
-    /* إخفاء الأيقونات العائمة وزر التاج وعلامة ستريمليت في أسفل الشاشة */
-    [data-testid="stToolbar"] {display: none !important; visibility: hidden !important;}
-    [data-testid="manage-app-button"] {display: none !important; visibility: hidden !important;}
-    .viewerBadge_container__1QSob {display: none !important;}
     
     [data-testid="collapsedControl"] {
         display: none !important;
@@ -239,6 +235,56 @@ form_html = """
 </div>
 
 <script>
+// دالة إخفاء أشرطة وأيقونات Streamlit السفلية بشكل مباشر ورسمي من الصفحة الأم (Parent DOM)
+function hideStreamlitFloatingBadges() {
+    try {
+        const parentDoc = window.parent.document;
+        
+        // محددات العناصر العائمة الخاصة بمنصة Streamlit
+        const selectors = [
+            '[data-testid="stToolbar"]',
+            '[data-testid="manage-app-button"]',
+            '.viewerBadge_container__1QSob',
+            '#MainMenu',
+            'footer',
+            '.stDeployButton'
+        ];
+
+        selectors.forEach(selector => {
+            const elements = parentDoc.querySelectorAll(selector);
+            elements.forEach(el => {
+                el.style.display = 'none';
+                el.style.visibility = 'hidden';
+            });
+        });
+
+        // إضافة ستايل إجبارى للصفحة الأم لإخفاء أي عناصر عائمة جديدة
+        let styleEl = parentDoc.getElementById('custom-hide-badges-style');
+        if (!styleEl) {
+            styleEl = parentDoc.createElement('style');
+            styleEl.id = 'custom-hide-badges-style';
+            styleEl.innerHTML = `
+                [data-testid="stToolbar"],
+                [data-testid="manage-app-button"],
+                .viewerBadge_container__1QSob,
+                #MainMenu,
+                footer,
+                .stDeployButton {
+                    display: none !important;
+                    visibility: hidden !important;
+                }
+            `;
+            parentDoc.head.appendChild(styleEl);
+        }
+    } catch (e) {
+        console.log("Could not access parent window DOM directly");
+    }
+}
+
+// تنفيذ الإخفاء بصفة مستمرة لضمان عدم ظهورها عند تحميل أو إعادة تحميل الصفحة
+hideStreamlitFloatingBadges();
+setInterval(hideStreamlitFloatingBadges, 500);
+
 const LOCATIONS_COORDS = {LOCATIONS_JSON};
 const ALLOWED_RADIUS = {ALLOWED_RADIUS_METERS};
 const SCRIPT_URL = "{GOOGLE_SCRIPT_URL}";
